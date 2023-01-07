@@ -21,6 +21,8 @@ class Bot {
     const DB_LOCATION = __DIR__."/../db";
     private string $api_url;
     private array $db_stores = array();
+    protected string|array $callback;
+
     function __construct(string $bot_token) {
         // Check that bot token is in the right format
         if (!preg_match("/^[0-9]{8,10}:[a-zA-Z0-9_-]{35}$/", $bot_token)) {
@@ -38,20 +40,7 @@ class Bot {
         // Setup database
         $this->setup_database();
     }
-    /**
-     * @brief Validate Telegram bot token by testing it.
-     * 
-     * @return bool
-     */
-    private function is_token_valid(): bool {
-        $url = $this->api_url."getMe";
-        $result = json_decode(file_get_contents($url));
-        if ($result->ok) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+    
     /**
      * @brief Checks whether the bot has access to a chat.
      * 
@@ -61,6 +50,22 @@ class Bot {
     public function has_access_to_chat(string $chat_id): bool {
         global $telegram_bot_token;
         $url = $this->bot_api_url()."getChatMember?chat_id=$channel_id&user_id=".$telegram_bot_token;
+        $result = json_decode(file_get_contents($url));
+        if ($result->ok) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    /**
+     * @brief Send a message to a chat.
+     * 
+     * @param string $chat_id
+     * @param string $message
+     * @return bool
+     */
+    public function send_message(string $chat_id, string $message): bool {
+        $url = $this->api_url."sendMessage?chat_id=$chat_id&text=".urlencode($message);
         $result = json_decode(file_get_contents($url));
         if ($result->ok) {
             return true;
@@ -78,7 +83,7 @@ class Bot {
      * @param array $allowed_updates Check https://core.telegram.org/bots/api#update for more information.
      * @return array
      */
-    public function getUpdates(int $offset = null, int $limit = 100, int $timeout = 0, array $allowed_updates = array("message")): array {
+    protected function getUpdates(int $offset = null, int $limit = 100, int $timeout = 0, array $allowed_updates = array("message")): array {
         // Use last update as offset
         if ($offset == null) {
             $last_update_id = $this->db_stores["common"]->findById(2);
@@ -104,23 +109,6 @@ class Bot {
     }
 
     /**
-     * @brief Send a message to a chat.
-     * 
-     * @param string $chat_id
-     * @param string $message
-     * @return bool
-     */
-    public function send_message(string $chat_id, string $message): bool {
-        $url = $this->api_url."sendMessage?chat_id=$chat_id&text=".urlencode($message);
-        $result = json_decode(file_get_contents($url));
-        if ($result->ok) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
      * @brief Setup databases using SleekDB.
      * 
      * @return bool
@@ -141,6 +129,21 @@ class Bot {
         $this->db_stores["users"] = new \SleekDB\Store("users", self::DB_LOCATION, $configuration);
 
         return true;
+    }
+
+    /**
+     * @brief Validate Telegram bot token by testing it.
+     * 
+     * @return bool
+     */
+    private function is_token_valid(): bool {
+        $url = $this->api_url."getMe";
+        $result = json_decode(file_get_contents($url));
+        if ($result->ok) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
