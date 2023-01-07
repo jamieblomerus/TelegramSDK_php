@@ -1,0 +1,13 @@
+{
+    "name": "jamieblomerus/telegramapiwrapper",
+    "description": "Makes communication with Telegrams powerful APIs easy and accessible for noobies and pros alike.",
+    "authors": [
+        {
+            "name": "Jamie Blomerus",
+            "email": "jamie.blomerus@protonmail.com"
+        }
+    ],
+    "require": {
+        "rakibtg/sleekdb": "^2.15"
+    }
+}

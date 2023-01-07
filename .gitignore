@@ -1,0 +1,12 @@
+# Database directory
+db/
+
+# Composer
+composer.phar
+/vendor/
+
+# IDE
+.vscode/
+
+# Development testing
+tests/development.php
