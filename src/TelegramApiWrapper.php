@@ -2,9 +2,9 @@
 /**
  * Project: PHP Telegram API Wrapper
  * 
- * @file telegram.php
- * @brief This file contains the Telegram class.
- * @details This file contains the Telegram class. It is used to communicate with the Telegram API.
+ * @file TelegramApiWrapper.php
+ * @brief This file is the root of the TelegramApiWrapper namespace.
+ * @details This file contains the important classes. It is used to communicate with the Telegram API.
  * 
  * @author 	Jamie Blomerus <jamie.blomerus@protonmail.com>
  */
@@ -13,7 +13,7 @@ namespace TelegramApiWrapper;
 use SleekDB\Store;
 
 /**
- * @class TelegramApiWrapper_bot
+ * @class Bot
  * @brief This class is used to communicate with the Telegram Bot API.
  * @details This class is used to communicate with the Telegram API. It is used to send messages to the Telegram API.
  */
