@@ -58,6 +58,12 @@ class Bot {
         }
     }
 
+    /**
+     * @brief Set the callback function.
+     * 
+     * @param string|array $callable
+     * @return void
+     */
     public function set_callback(string|array $callable): void {
         if (!is_callable($callable)) {
             throw new \InvalidArgumentException("Callback needs to be callable. Official docs: https://www.php.net/manual/en/language.types.callable.php");
@@ -85,6 +91,10 @@ class Bot {
     }
 
     /**
+     * @brief Check for new messages.
+     * 
+     * @return void
+     */
     public function check_for_messages(): void {
         $updates = $this->get_updates();
 
@@ -126,6 +136,11 @@ class Bot {
     }
 
     /**
+     * @brief Process updates.
+     * 
+     * @param array $updates
+     * @return void
+     */
     private function process_updates(array $updates): void {
         foreach ($updates as $update) {
             // Save user to database
