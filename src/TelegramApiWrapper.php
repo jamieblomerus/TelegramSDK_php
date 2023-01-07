@@ -57,6 +57,16 @@ class Bot {
             return false;
         }
     }
+
+    public function set_callback(string|array $callable): void {
+        if (!is_callable($callable)) {
+            throw new InvalidArgumentException("Callback needs to be callable. Official docs: https://www.php.net/manual/en/language.types.callable.php");
+            return;
+        }
+
+        $this->callback = $callable;
+    }
+
     /**
      * @brief Send a message to a chat.
      * 
