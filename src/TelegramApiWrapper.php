@@ -250,6 +250,16 @@ class Bot {
     private function store_user($from): void {
         $user = $this->db_stores["users"]->findBy(array("id", "=", $from->id), null, 1);
         if ($user != null) {
+            // Update user if needed
+            if ($user[0]["username"] != $from->username) {
+                $this->db_stores["users"]->updateById($user[0]["_id"], array("username" => $from->username));
+            }
+            if ($user[0]["first_name"] != $from->first_name) {
+                $this->db_stores["users"]->updateById($user[0]["_id"], array("first_name" => $from->first_name));
+            }
+            if ($user[0]["last_name"] != $from->last_name) {
+                $this->db_stores["users"]->updateById($user[0]["_id"], array("last_name" => $from->last_name));
+            }
             return;
         }
 
