@@ -7,4 +7,11 @@ require __DIR__."/../src/TelegramApiWrapper.php";
 
 $instance = new \TelegramApiWrapper\Bot($bot_token);
 
-var_dump($instance->getUpdates());
+$instance->set_callback("callback");
+
+$instance->check_for_messages();
+
+function callback($message) {
+    global $instance;
+    $instance->send_message($message->chat->id, "Hello ".$message->from->first_name);
+}
