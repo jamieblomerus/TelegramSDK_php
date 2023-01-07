@@ -93,7 +93,7 @@ class Bot {
      * @param array $allowed_updates Check https://core.telegram.org/bots/api#update for more information.
      * @return array
      */
-    protected function getUpdates(int $offset = null, int $limit = 100, int $timeout = 0, array $allowed_updates = array("message")): array {
+    protected function get_updates(int $offset = null, int $limit = 100, int $timeout = 0, array $allowed_updates = array("message")): array {
         // Use last update as offset
         if ($offset == null) {
             $last_update_id = $this->db_stores["common"]->findById(2);
