@@ -84,6 +84,12 @@ class Bot {
         }
     }
 
+    public function check_for_messages() {
+        $updates = $this->get_updates();
+
+        $this->process_updates($updates);
+    }
+
     /**
      * @brief Get updates from the Telegram API. Defaults to only getting new messages.
      * 
@@ -118,6 +124,24 @@ class Bot {
         }
     }
 
+    private function process_updates(array $updates) {
+        foreach ($updates as $update) {
+            // Save user to database
+            $user = $update->message->from;
+            var_dump($user);
+            $this->store_user($user);
+
+            // Save message to database
+            $message = $update->message;
+            $this->store_message($message);
+
+            // Call callback
+            if ($this->callback != null) {
+                call_user_func($this->callback, $message);
+            }
+        }
+    }
+
     /**
      * @brief Setup databases using SleekDB.
      * 
@@ -137,6 +161,7 @@ class Bot {
         // Initiate all stores needed
         $this->db_stores["common"] = new \SleekDB\Store("common", self::DB_LOCATION, $configuration);
         $this->db_stores["users"] = new \SleekDB\Store("users", self::DB_LOCATION, $configuration);
+        $this->db_stores["messages"] = new \SleekDB\Store("messages", self::DB_LOCATION, $configuration);
 
         return true;
     }
@@ -157,17 +182,66 @@ class Bot {
     }
 
     /**
-     * @brief Save user to database.
+     * @brief Get message type.
      * 
-     * @param stdClass $chat
+     * @param $message
+     * @return string
+     */
+    private function get_message_type($message): string {
+        if (isset($message->text)) {
+            return "text";
+        } else if (isset($message->photo)) {
+            return "photo";
+        } else if (isset($message->video)) {
+            return "video";
+        } else if (isset($message->audio)) {
+            return "audio";
+        } else if (isset($message->voice)) {
+            return "voice";
+        } else if (isset($message->document)) {
+            return "document";
+        } else if (isset($message->sticker)) {
+            return "sticker";
+        } else {
+            return "unknown";
+        }
+    }
+
+    /**
+     * @brief Save message to database.
+     * 
+     * @param $message
      * @return void
      */
-    private function save_user(stdClass $chat): void {
+    protected function store_message($message): void {
+        $message = [
+            "message_id" => $message->message_id,
+            "from" => $message->from->id,
+            "chat" => $message->chat->id,
+            "date" => $message->date,
+            "type" => $this->get_message_type($message),
+            "object" => serialize($message)
+        ];
+        $this->db_stores["messages"]->insert($message);
+    }
+
+    /**
+     * @brief Save user to database.
+     * 
+     * @param $chat
+     * @return void
+     */
+    private function store_user($from): void {
+        $user = $this->db_stores["users"]->findBy(array("id", "=", $from->id), null, 1);
+        if ($user != null) {
+            return;
+        }
+
         $user = [
-            "_id" => $chat->id,
-            "username" => $chat->username,
-            "first_name" => $chat->first_name,
-            "last_name" => $chat->last_name
+            "id" => $from->id,
+            "username" => $from->username,
+            "first_name" => $from->first_name,
+            "last_name" => $from->last_name
         ];
         $this->db_stores["users"]->insert($user);
     }
