@@ -26,14 +26,14 @@ class Bot {
     function __construct(string $bot_token) {
         // Check that bot token is in the right format
         if (!preg_match("/^[0-9]{8,10}:[a-zA-Z0-9_-]{35}$/", $bot_token)) {
-            throw new InvalidArgumentException("Telegram bot token is in wrong format.");
+            throw new \InvalidArgumentException("Telegram bot token is in wrong format.");
             return;
         }
         // Set API url
         $this->api_url = "https://api.telegram.org/bot$bot_token/";
         // Validate token
         if (!$this->is_token_valid()) {
-            throw new Exception("Telegram bot token is unvalid.");
+            throw new \Exception("Telegram bot token is unvalid.");
             return;
         }
 
@@ -60,7 +60,7 @@ class Bot {
 
     public function set_callback(string|array $callable): void {
         if (!is_callable($callable)) {
-            throw new InvalidArgumentException("Callback needs to be callable. Official docs: https://www.php.net/manual/en/language.types.callable.php");
+            throw new \InvalidArgumentException("Callback needs to be callable. Official docs: https://www.php.net/manual/en/language.types.callable.php");
             return;
         }
 
@@ -84,7 +84,8 @@ class Bot {
         }
     }
 
-    public function check_for_messages() {
+    /**
+    public function check_for_messages(): void {
         $updates = $this->get_updates();
 
         $this->process_updates($updates);
@@ -124,11 +125,11 @@ class Bot {
         }
     }
 
-    private function process_updates(array $updates) {
+    /**
+    private function process_updates(array $updates): void {
         foreach ($updates as $update) {
             // Save user to database
             $user = $update->message->from;
-            var_dump($user);
             $this->store_user($user);
 
             // Save message to database
