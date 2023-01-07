@@ -21,7 +21,7 @@ class Bot {
     const DB_LOCATION = __DIR__."/../db";
     private string $api_url;
     private array $db_stores = array();
-    protected string|array $callback;
+    protected string|array|null $callback = null;
 
     function __construct(string $bot_token) {
         // Check that bot token is in the right format
