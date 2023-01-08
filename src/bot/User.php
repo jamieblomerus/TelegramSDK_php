@@ -91,7 +91,7 @@ class User {
      * @param int $amount (Optional) Amount of messages to get. Default is 100.
      * @return int
      */
-    public function get_latest_messages(int $amount): array {
+    public function get_latest_messages(int $amount = 100): array {
         if (!isset($this->user_id)) {
             throw new \Exception("User is not set.");
         }
