@@ -259,6 +259,7 @@ class Bot {
             "chat" => $message->chat->id,
             "date" => $message->date,
             "type" => $this->get_message_type($message),
+            "text" => $message->text ?? null,
             "object" => serialize($message)
         ];
         self::$db_stores["messages"]->insert($message);
@@ -288,10 +289,10 @@ class Bot {
 
         $user = [
             "id" => $from->id,
-            "username" => $from->username,
+            "username" => $from->username ?? null,
             "first_name" => $from->first_name,
-            "last_name" => $from->last_name
+            "last_name" => $from->last_name ?? null,
         ];
-        $this->db_stores["users"]->insert($user);
+        self::$db_stores["users"]->insert($user);
     }
 }
