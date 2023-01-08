@@ -71,9 +71,9 @@ class User {
             foreach ($photos[0] as $photo) {
                 if ($photo->width == $size) {
                     $file_id = $photo->file_id;
-                    $query_result = Bot::$instance->send_custom_request("getFile", array("file_id" => $file_id));
+                    $query_result = Bot::$instance->get_file($file_id);
                     $file_path = $query_result->file_path;
-                    return "https://api.telegram.org/file/bot".Bot::$instance->get_bot_token()."/$file_path";
+                    return $file_path;
                 }
             }
 

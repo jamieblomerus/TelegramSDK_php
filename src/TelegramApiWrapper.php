@@ -168,15 +168,6 @@ class Bot {
     }
 
     /**
-     * @brief Get bot token.
-     * 
-     * @return string
-     */
-    public function get_bot_token(): string {
-        return $this->bot_token;
-    }
-
-    /**
      * @brief Get file from file id. API docs: https://core.telegram.org/bots/api#getfile
      * 
      * @param string $file_id
@@ -186,7 +177,7 @@ class Bot {
         $url = $this->api_url."getFile?file_id=$file_id";
         $result = json_decode(file_get_contents($url));
         if ($result->ok) {
-            return $result->result->file_path;
+            return "https://api.telegram.org/file/bot$this->bot_token/".$result->result->file_path;
         } else {
             return null;
         }
