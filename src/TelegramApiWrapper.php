@@ -136,7 +136,7 @@ class Bot {
     protected function get_updates(int $offset = null, int $limit = 100, int $timeout = 0, array $allowed_updates = array("message")): array {
         // Use last update as offset
         if ($offset == null) {
-            $last_update_id = $this->db_stores["common"]->findById(2);
+            $last_update_id = self::$db_stores["common"]->findById(2);
             if ($last_update_id != null) {
                 $offset = $last_update_id["last_update_id"];
                 $offset++;
@@ -149,7 +149,7 @@ class Bot {
             // Update last update id in database
             if (count($result->result) > 0) {
                 $last_update_id = end($result->result)->update_id;
-                $this->db_stores["common"]->updateOrInsert(array("_id"=>2, "last_update_id" => $last_update_id), false);
+                self::$db_stores["common"]->updateOrInsert(array("_id"=>2, "last_update_id" => $last_update_id), false);
             }
 
             return $result->result;
@@ -198,9 +198,9 @@ class Bot {
         ];
 
         // Initiate all stores needed
-        $this->db_stores["common"] = new \SleekDB\Store("common", self::DB_LOCATION, $configuration);
-        $this->db_stores["users"] = new \SleekDB\Store("users", self::DB_LOCATION, $configuration);
-        $this->db_stores["messages"] = new \SleekDB\Store("messages", self::DB_LOCATION, $configuration);
+        self::$db_stores["common"] = new \SleekDB\Store("common", self::DB_LOCATION, $configuration);
+        self::$db_stores["users"] = new \SleekDB\Store("users", self::DB_LOCATION, $configuration);
+        self::$db_stores["messages"] = new \SleekDB\Store("messages", self::DB_LOCATION, $configuration);
 
         return true;
     }
@@ -261,7 +261,7 @@ class Bot {
             "type" => $this->get_message_type($message),
             "object" => serialize($message)
         ];
-        $this->db_stores["messages"]->insert($message);
+        self::$db_stores["messages"]->insert($message);
     }
 
     /**
@@ -271,17 +271,17 @@ class Bot {
      * @return void
      */
     private function store_user($from): void {
-        $user = $this->db_stores["users"]->findBy(array("id", "=", $from->id), null, 1);
+        $user = self::$db_stores["users"]->findBy(array("id", "=", $from->id), null, 1);
         if ($user != null) {
             // Update user if needed
             if ($user[0]["username"] != $from->username) {
-                $this->db_stores["users"]->updateById($user[0]["_id"], array("username" => $from->username));
+                self::$db_stores["users"]->updateById($user[0]["_id"], array("username" => $from->username ?? null));
             }
             if ($user[0]["first_name"] != $from->first_name) {
-                $this->db_stores["users"]->updateById($user[0]["_id"], array("first_name" => $from->first_name));
+                self::$db_stores["users"]->updateById($user[0]["_id"], array("first_name" => $from->first_name));
             }
             if ($user[0]["last_name"] != $from->last_name) {
-                $this->db_stores["users"]->updateById($user[0]["_id"], array("last_name" => $from->last_name));
+                self::$db_stores["users"]->updateById($user[0]["_id"], array("last_name" => $from->last_name ?? null));
             }
             return;
         }
