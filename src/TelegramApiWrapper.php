@@ -146,8 +146,98 @@ class Bot {
      * @param string $message
      * @return bool
      */
-    public function send_message(string $chat_id, string $message): bool {
-        $url = $this->api_url."sendMessage?chat_id=$chat_id&text=".urlencode($message);
+    public function send_message(string $chat_id, string $message, string $parse_mode = ""): bool {
+        $url = $this->api_url."sendMessage?chat_id=$chat_id&text=".urlencode($message)."&parse_mode=$parse_mode";
+        $result = json_decode(file_get_contents($url));
+        if ($result->ok) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @brief Send a photo to a chat.
+     * 
+     * @param string $chat_id
+     * @param string $photo Photo url or photo id.
+     * @return bool
+     */
+    public function send_photo(string $chat_id, string $photo): bool {
+        $photo = urlencode($photo);
+        $url = $this->api_url."sendPhoto?chat_id=$chat_id&photo=$photo";
+        $result = json_decode(file_get_contents($url));
+        if ($result->ok) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @brief Send a video to a chat.
+     * 
+     * @param string $chat_id
+     * @param string $video Video url or video id.
+     * @return bool
+     */
+    public function send_video(string $chat_id, string $video): bool {
+        $video = urlencode($video);
+        $url = $this->api_url."sendVideo?chat_id=$chat_id&video=$video";
+        $result = json_decode(file_get_contents($url));
+        if ($result->ok) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @brief Send an audio to a chat.
+     * 
+     * @param string $chat_id
+     * @param string $audio Audio url or audio id.
+     * @return bool
+     */
+    public function send_audio(string $chat_id, string $audio): bool {
+        $audio = urlencode($audio);
+        $url = $this->api_url."sendAudio?chat_id=$chat_id&audio=$audio";
+        $result = json_decode(file_get_contents($url));
+        if ($result->ok) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @brief Send a voice to a chat.
+     * 
+     * @param string $chat_id
+     * @param string $voice Voice url or voice id.
+     * @return bool
+     */
+    public function send_voice(string $chat_id, string $voice): bool {
+        $voice = urlencode($voice);
+        $url = $this->api_url."sendVoice?chat_id=$chat_id&voice=$voice";
+        $result = json_decode(file_get_contents($url));
+        if ($result->ok) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @brief Send a document(file) to a chat.
+     * 
+     * @param string $chat_id
+     * @param string $file File url or file id. Sending a file url is not recommended and only works with GIF, PDF, and ZIP files.
+     * @return bool
+     */
+    public function send_document(string $chat_id, string $file): bool {
+        $file = urlencode($file);
+        $url = $this->api_url."sendDocument?chat_id=$chat_id&document=$file";
         $result = json_decode(file_get_contents($url));
         if ($result->ok) {
             return true;
