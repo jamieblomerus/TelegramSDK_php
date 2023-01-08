@@ -26,7 +26,7 @@ class Bot {
     protected string $api_url;
     protected string $bot_token;
     public static array $db_stores = array();
-    protected string|array|null $callback = null;
+    protected array|null $callback = null;
 
     function __construct(string $bot_token) {
         // Check if instance already exists
@@ -77,15 +77,66 @@ class Bot {
      * @brief Set the callback function.
      * 
      * @param string|array $callable
+     * @param string|null $criteria
      * @return void
      */
-    public function set_callback(string|array $callable): void {
+    public function set_callback(string|array $callable, string|null $criteria = null): void {
         if (!is_callable($callable)) {
             throw new \InvalidArgumentException("Callback needs to be callable. Official docs: https://www.php.net/manual/en/language.types.callable.php");
             return;
         }
 
-        $this->callback = $callable;
+        switch ($criteria) {
+            case null:
+            case "default":
+                $this->callback["default"] = $callable;
+                break;
+            case "message":
+                $this->callback["message"] = $callable;
+                break;
+            case "message_text":
+                $this->callback["message_text"] = $callable;
+                break;
+            case "message_photo":
+                $this->callback["message_photo"] = $callable;
+                break;
+            case "message_video":
+                $this->callback["message_video"] = $callable;
+                break;
+            case "message_audio":
+                $this->callback["message_audio"] = $callable;
+                break;
+            case "message_voice":
+                $this->callback["message_voice"] = $callable;
+                break;
+            case "message_document":
+                $this->callback["message_document"] = $callable;
+                break;
+            case "message_sticker":
+                $this->callback["message_sticker"] = $callable;
+                break;
+            default:
+                throw new \InvalidArgumentException("Invalid criteria. Valid criteria: default, message, message_text, message_photo, message_video, message_audio, message_voice, message_document, message_sticker");
+                break;
+        }
+    }
+
+    /**
+     * @brief Unset the callback function.
+     * 
+     * @param string|null $criteria
+     * @return array|null
+     */
+    public function unset_callback(string|null $criteria = null): array|null {
+        if ($criteria === null) {
+            $callback = $this->callback;
+            $this->callback = null;
+            return $callback;
+        } else {
+            $callback = $this->callback[$criteria];
+            unset($this->callback[$criteria]);
+            return $callback;
+        }
     }
 
     /**
@@ -219,9 +270,107 @@ class Bot {
             $this->store_message($message);
 
             // Call callback
-            if ($this->callback != null) {
-                call_user_func($this->callback, $message);
+            $this->call_message_callback($message);
+        }
+    }
+
+    /**
+     * @brief Call callback on new message.
+     * 
+     * @param stdClass $message
+     * @return void
+     */
+    private function call_message_callback(\stdClass $message): void {
+        if (!isset($this->callback)) {
+            return;
+        }
+
+        // Get message type
+        $message_type = $this->get_message_type($message);
+
+        // Get callback
+        $callback = $this->callback["message_".$message_type] ?? null;
+        if ($callback == null) {
+            $callback = $this->callback["message"] ?? null;
+            if ($callback == null) {
+                $callback = $this->callback["default"] ?? null;
             }
+        }
+
+        if ($callback == null) {
+            return;
+        }
+
+        // Call callback
+        switch ($message_type) {
+            case "text":
+                call_user_func($callback, array("text" => $message->text, "from" => $message->from->id, "chat" => $message->chat->id, "message" => $message));
+                break;
+            case "photo":
+                $photo_sizes = [
+                    "small" => $message->photo[0]->file_id,
+                    "medium" => $message->photo[1]->file_id,
+                    "large" => $message->photo[2]->file_id
+                ];
+                call_user_func($callback, array("photo_sizes" => $photo_sizes, "from" => $message->from->id, "chat" => $message->chat->id, "message" => $message));
+                break;
+            case "video":
+                $video = [
+                    "file_id" => $message->video->file_id,
+                    "width" => $message->video->width,
+                    "height" => $message->video->height,
+                    "duration" => $message->video->duration,
+                    "file_size" => $message->video->file_size ?? null,
+                    "filename" => $message->video->file_name ?? null,
+                    "thumb" => $message->video->thumb->file_id ?? null
+                ];
+                call_user_func($callback, array("video" => $video, "from" => $message->from->id, "chat" => $message->chat->id, "message" => $message));
+                break;
+            case "audio":
+                $audio = [
+                    "file_id" => $message->audio->file_id,
+                    "duration" => $message->audio->duration,
+                    "performer" => $message->audio->performer ?? null,
+                    "title" => $message->audio->title ?? null,
+                    "filename" => $message->audio->file_name ?? null,
+                    "thumb" => $message->audio->thumb->file_id ?? null
+                ];
+                call_user_func($callback, array("audio" => $audio, "from" => $message->from->id, "chat" => $message->chat->id, "message" => $message));
+                break;
+            case "voice":
+                $voice = [
+                    "file_id" => $message->voice->file_id,
+                    "duration" => $message->voice->duration,
+                    "file_size" => $message->voice->file_size ?? null,
+                ];
+                call_user_func($callback, array("voice" => $voice, "from" => $message->from->id, "chat" => $message->chat->id, "message" => $message));
+                break;
+            case "document":
+                $document = [
+                    "file_id" => $message->document->file_id,
+                    "filename" => $message->document->file_name ?? null,
+                    "file_size" => $message->document->file_size ?? null,
+                    "thumb" => $message->document->thumb->file_id ?? null
+                ];
+                call_user_func($callback, array("document" => $document, "from" => $message->from->id, "chat" => $message->chat->id, "message" => $message));
+                break;
+            case "sticker":
+                $sticker = [
+                    "file_id" => $message->sticker->file_id,
+                    "width" => $message->sticker->width,
+                    "height" => $message->sticker->height,
+                    "file_size" => $message->sticker->file_size ?? null,
+                    "thumb" => $message->sticker->thumb->file_id ?? null,
+                    "emoji" => $message->sticker->emoji ?? null,
+                    "set_name" => $message->sticker->set_name ?? null,
+                    "is_animated" => $message->sticker->is_animated ?? null,
+                    "is_video" => $message->sticker->is_video ?? null
+                ];
+                call_user_func($callback, array("sticker" => $sticker, "from" => $message->from->id, "chat" => $message->chat->id, "message" => $message));
+                break;
+            default:
+                call_user_func($callback, array($message->from->id, $message->chat->id, $message));
+                break;
         }
     }
 
