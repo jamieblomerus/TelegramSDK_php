@@ -124,6 +124,50 @@ class Bot {
     public function get_bot_token(): string {
         return $this->bot_token;
     }
+
+    /**
+     * @brief Get file from file id. API docs: https://core.telegram.org/bots/api#getfile
+     * 
+     * @param string $file_id
+     * @return string|null
+     */
+    public function get_file(string $file_id): string|null {
+        $url = $this->api_url."getFile?file_id=$file_id";
+        $result = json_decode(file_get_contents($url));
+        if ($result->ok) {
+            return $result->result->file_path;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @brief Send cutom request to the Telegram API.
+     * 
+     * @param string $method
+     * @param array $params
+     * @return stdClass|null
+     */
+    public function send_custom_request(string $method, array $params): \stdClass|null {
+        // Check if method is valid
+        if (!preg_match("/^[a-zA-Z0-9_]+$/", $method)) {
+            throw new \InvalidArgumentException("Method is in wrong format.");
+            return array();
+        }
+
+        $url = $this->api_url.$method."?";
+        foreach ($params as $key => $value) {
+            $url .= "$key=".urlencode($value)."&";
+        }
+        $url = substr($url, 0, -1);
+        $result = json_decode(file_get_contents($url));
+        if ($result->ok) {
+            return $result->result;
+        } else {
+            return null;
+        }
+    }
+
     /**
      * @brief Get updates from the Telegram API. Defaults to only getting new messages.
      * 
