@@ -144,10 +144,19 @@ class Bot {
      * 
      * @param string $chat_id
      * @param string $message
+     * @param array $params (Optional) Additional parameters.
      * @return bool
      */
-    public function send_message(string $chat_id, string $message, string $parse_mode = ""): bool {
-        $url = $this->api_url."sendMessage?chat_id=$chat_id&text=".urlencode($message)."&parse_mode=$parse_mode";
+    public function send_message(string $chat_id, string $message, array $params = array()): bool {
+        $url = $this->api_url."sendMessage?chat_id=$chat_id&text=".urlencode($message)."&";
+
+        // Add additional params
+        foreach ($params as $key => $value) {
+            $value = urlencode($value);
+            $url .= "$key=$value&";
+        }
+        $url = substr($url, 0, -1);
+
         $result = json_decode(file_get_contents($url));
         if ($result->ok) {
             return true;
@@ -161,11 +170,20 @@ class Bot {
      * 
      * @param string $chat_id
      * @param string $photo Photo url or photo id.
+     * @param array $params (Optional) Additional parameters.
      * @return bool
      */
-    public function send_photo(string $chat_id, string $photo): bool {
+    public function send_photo(string $chat_id, string $photo, array $params = array()): bool {
         $photo = urlencode($photo);
         $url = $this->api_url."sendPhoto?chat_id=$chat_id&photo=$photo";
+
+        // Add additional params
+        foreach ($params as $key => $value) {
+            $value = urlencode($value);
+            $url .= "$key=$value&";
+        }
+        $url = substr($url, 0, -1);
+
         $result = json_decode(file_get_contents($url));
         if ($result->ok) {
             return true;
@@ -179,11 +197,20 @@ class Bot {
      * 
      * @param string $chat_id
      * @param string $video Video url or video id.
+     * @param array $params (Optional) Additional parameters.
      * @return bool
      */
-    public function send_video(string $chat_id, string $video): bool {
+    public function send_video(string $chat_id, string $video, array $params = array()): bool {
         $video = urlencode($video);
         $url = $this->api_url."sendVideo?chat_id=$chat_id&video=$video";
+
+        // Add additional params
+        foreach ($params as $key => $value) {
+            $value = urlencode($value);
+            $url .= "$key=$value&";
+        }
+        $url = substr($url, 0, -1);
+
         $result = json_decode(file_get_contents($url));
         if ($result->ok) {
             return true;
@@ -197,11 +224,20 @@ class Bot {
      * 
      * @param string $chat_id
      * @param string $audio Audio url or audio id.
+     * @param array $params (Optional) Additional parameters.
      * @return bool
      */
-    public function send_audio(string $chat_id, string $audio): bool {
+    public function send_audio(string $chat_id, string $audio, array $params = array()): bool {
         $audio = urlencode($audio);
         $url = $this->api_url."sendAudio?chat_id=$chat_id&audio=$audio";
+
+        // Add additional params
+        foreach ($params as $key => $value) {
+            $value = urlencode($value);
+            $url .= "$key=$value&";
+        }
+        $url = substr($url, 0, -1);
+
         $result = json_decode(file_get_contents($url));
         if ($result->ok) {
             return true;
@@ -215,11 +251,20 @@ class Bot {
      * 
      * @param string $chat_id
      * @param string $voice Voice url or voice id.
+     * @param array $params (Optional) Additional parameters.
      * @return bool
      */
-    public function send_voice(string $chat_id, string $voice): bool {
+    public function send_voice(string $chat_id, string $voice, array $params = array()): bool {
         $voice = urlencode($voice);
         $url = $this->api_url."sendVoice?chat_id=$chat_id&voice=$voice";
+
+        // Add additional params
+        foreach ($params as $key => $value) {
+            $value = urlencode($value);
+            $url .= "$key=$value&";
+        }
+        $url = substr($url, 0, -1);
+
         $result = json_decode(file_get_contents($url));
         if ($result->ok) {
             return true;
@@ -233,11 +278,20 @@ class Bot {
      * 
      * @param string $chat_id
      * @param string $file File url or file id. Sending a file url is not recommended and only works with GIF, PDF, and ZIP files.
+     * @param array $params (Optional) Additional parameters.
      * @return bool
      */
-    public function send_document(string $chat_id, string $file): bool {
+    public function send_document(string $chat_id, string $file, array $params = array()): bool {
         $file = urlencode($file);
         $url = $this->api_url."sendDocument?chat_id=$chat_id&document=$file";
+
+        // Add additional params
+        foreach ($params as $key => $value) {
+            $value = urlencode($value);
+            $url .= "$key=$value&";
+        }
+        $url = substr($url, 0, -1);
+
         $result = json_decode(file_get_contents($url));
         if ($result->ok) {
             return true;
