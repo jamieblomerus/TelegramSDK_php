@@ -12,6 +12,9 @@
 namespace TelegramApiWrapper;
 use SleekDB\Store;
 
+// Include files
+require_once __DIR__."/bot/User.php";
+
 /**
  * @class Bot
  * @brief This class is used to communicate with the Telegram Bot API.
@@ -19,17 +22,29 @@ use SleekDB\Store;
  */
 class Bot {
     const DB_LOCATION = __DIR__."/../db";
-    private string $api_url;
-    private array $db_stores = array();
+    public static Bot $instance;
+    protected string $api_url;
+    protected string $bot_token;
+    public static array $db_stores = array();
     protected string|array|null $callback = null;
 
     function __construct(string $bot_token) {
+        // Check if instance already exists
+        if (isset(self::$instance)) {
+            throw new \Exception("Bot instance already exists.");
+            return;
+        }
+
+        // Set instance
+        self::$instance = $this;
+
         // Check that bot token is in the right format
         if (!preg_match("/^[0-9]{8,10}:[a-zA-Z0-9_-]{35}$/", $bot_token)) {
             throw new \InvalidArgumentException("Telegram bot token is in wrong format.");
             return;
         }
-        // Set API url
+        // Set bot token and api url
+        $this->bot_token = $bot_token;
         $this->api_url = "https://api.telegram.org/bot$bot_token/";
         // Validate token
         if (!$this->is_token_valid()) {
@@ -101,6 +116,14 @@ class Bot {
         $this->process_updates($updates);
     }
 
+    /**
+     * @brief Get bot token.
+     * 
+     * @return string
+     */
+    public function get_bot_token(): string {
+        return $this->bot_token;
+    }
     /**
      * @brief Get updates from the Telegram API. Defaults to only getting new messages.
      * 
