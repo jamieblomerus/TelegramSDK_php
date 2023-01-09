@@ -14,6 +14,7 @@ use SleekDB\Store;
 
 // Include files
 require_once __DIR__."/bot/User.php";
+require_once __DIR__."/bot/Chat.php";
 
 /**
  * @class Bot
@@ -332,9 +333,9 @@ class Bot {
      * 
      * @param string $method
      * @param array $params
-     * @return stdClass|null
+     * @return mixed
      */
-    public function send_custom_request(string $method, array $params): \stdClass|null {
+    public function send_custom_request(string $method, array $params): mixed {
         // Check if method is valid
         if (!preg_match("/^[a-zA-Z0-9_]+$/", $method)) {
             throw new \InvalidArgumentException("Method is in wrong format.");
@@ -528,6 +529,7 @@ class Bot {
         // Initiate all stores needed
         self::$db_stores["common"] = new \SleekDB\Store("common", self::DB_LOCATION, $configuration);
         self::$db_stores["users"] = new \SleekDB\Store("users", self::DB_LOCATION, $configuration);
+        self::$db_stores["chats"] = new \SleekDB\Store("chats", self::DB_LOCATION, $configuration);
         self::$db_stores["messages"] = new \SleekDB\Store("messages", self::DB_LOCATION, $configuration);
 
         return true;
