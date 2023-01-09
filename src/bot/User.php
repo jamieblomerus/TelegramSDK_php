@@ -97,6 +97,7 @@ class User {
         }
 
         $messages = Bot::$db_stores["messages"]->findBy(["chat", "=", $this->user_id], ["date" => "desc"], $amount);
+        $messages = array_reverse($messages);
         return $messages;
     }
 
