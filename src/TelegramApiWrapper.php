@@ -407,6 +407,9 @@ class Bot {
 
             // Call callback
             $this->call_message_callback($message);
+
+            // Call built-in callbacks
+            $this->save_chat_to_db($message); // Save chat to database
         }
     }
 
@@ -507,6 +510,18 @@ class Bot {
             default:
                 call_user_func($callback, array($message->from->id, $message->chat->id, $message));
                 break;
+        }
+    }
+
+    /**
+     * @brief Send chat info from message, to Chat class, for insertion into database.
+     * 
+     * @param \stdClass $message
+     * @return void
+     */
+    private function save_chat_to_db(\stdClass $message) {
+        if (class_exists("\TelegramApiWrapper\Bot\Chat")) {
+            \TelegramApiWrapper\Bot\Chat::save_chat_from_message($message);
         }
     }
 
