@@ -1,5 +1,5 @@
 {
-    "name": "jamieblomerus/telegramapiwrapper",
+    "name": "jamieblomerus/telegramsdk",
     "description": "Makes communication with Telegrams powerful APIs easy and accessible for noobies and pros alike.",
     "authors": [
         {
@@ -9,5 +9,10 @@
     ],
     "require": {
         "rakibtg/sleekdb": "^2.15"
+    },
+    "autoload": {
+        "psr-4": {
+            "TelegramSDK\\": "src/"
+        }
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Project: PHP Telegram API Wrapper
+ * Project: PHP Telegram SDK
  * 
  * @file User.php
  * @brief This file lets you get information about users.
@@ -9,9 +9,9 @@
  * @author 	Jamie Blomerus <jamie.blomerus@protonmail.com>
  */
 
-namespace TelegramApiWrapper\Bot;
+namespace TelegramSDK\Bot;
 use SleekDB\Store;
-use TelegramApiWrapper\Bot;
+use TelegramSDK\Bot;
 
 class User {
     public int $user_id;

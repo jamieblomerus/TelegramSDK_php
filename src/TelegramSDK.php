@@ -1,15 +1,15 @@
 <?php
 /**
- * Project: PHP Telegram API Wrapper
+ * Project: PHP Telegram SDK
  * 
- * @file TelegramApiWrapper.php
- * @brief This file is the root of the TelegramApiWrapper namespace.
+ * @file TelegramSDK.php
+ * @brief This file is the root of the TelegramSDK namespace.
  * @details This file contains the important classes. It is used to communicate with the Telegram API.
  * 
  * @author 	Jamie Blomerus <jamie.blomerus@protonmail.com>
  */
 
-namespace TelegramApiWrapper;
+namespace TelegramSDK;
 use SleekDB\Store;
 
 // Include files
@@ -520,8 +520,8 @@ class Bot {
      * @return void
      */
     private function save_chat_to_db(\stdClass $message) {
-        if (class_exists("\TelegramApiWrapper\Bot\Chat")) {
-            \TelegramApiWrapper\Bot\Chat::save_chat_from_message($message);
+        if (class_exists("\TelegramSDK\Bot\Chat")) {
+            \TelegramSDK\Bot\Chat::save_chat_from_message($message);
         }
     }
 
