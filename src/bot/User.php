@@ -79,9 +79,7 @@ class User {
 
             // If no photo with the requested size is found, return the biggest one.
             $file_id = end($photos[0])->file_id;
-            $query_result = Bot::$instance->send_custom_request("getFile", array("file_id" => $file_id));
-            $file_path = $query_result->file_path;
-            return "https://api.telegram.org/file/bot".Bot::$instance->get_bot_token()."/$file_path";
+            return Bot::$instance->get_file($file_id);
         }
     }
 
