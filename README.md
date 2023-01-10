@@ -11,7 +11,9 @@ This is a work-in-progress SDK for developing Telegram applications using the PH
 
 ## Documentation
 
-Full documentation for using the SDK is currently not in progress. I will get to it when I am done with the development of the basic SDK.
+Documentation for using the SDK is not yet fully completed but a work in progress.
+
+Check it out here: https://jamieblomerus.github.io/TelegramSDK_php/
 
 ## Contributing
 
