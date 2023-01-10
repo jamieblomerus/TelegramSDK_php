@@ -79,6 +79,7 @@ class Bot {
      * 
      * @param string|array $callable
      * @param string|null $criteria
+     * @throws \InvalidArgumentException Thrown when the callback is not callable.
      * @return void
      */
     public function set_callback(string|array $callable, string|null $criteria = null): void {
