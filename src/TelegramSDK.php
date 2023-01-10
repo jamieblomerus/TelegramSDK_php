@@ -329,7 +329,7 @@ class Bot {
     }
 
     /**
-     * @brief Send cutom request to the Telegram API.
+     * @brief Send custom request to the Telegram API.
      * 
      * @param string $method
      * @param array $params
