@@ -3,7 +3,7 @@ Getting started
 
 Welcome to the documentation for TelegramSDK_php.
 
-TelegramSDK_php is a PHP library for the Telegram APIs. It currently only support the Bot API, but the plan is to add support for the other APIs as well.
+TelegramSDK_php is a PHP library for the Telegram APIs. It currently only supports the Bot API, but the plan is to add support for the other APIs as well.
 
 Installation
 ------------
