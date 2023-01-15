@@ -7,6 +7,7 @@
  * @details This file contains the important classes. It is used to communicate with the Telegram API.
  * 
  * @author 	Jamie Blomerus <jamie.blomerus@protonmail.com>
+ * @version 0.1
  */
 
 namespace TelegramSDK;
