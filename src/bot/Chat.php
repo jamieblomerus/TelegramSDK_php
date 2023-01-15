@@ -14,12 +14,27 @@ use SleekDB\Store;
 use TelegramSDK\Bot;
 
 class Chat {
-    public int $chat_id;
-    public ChatType $type;
-    public string|null $title;
-    public string|null $username;
-    public User|null $user; // User object (if chat is a private chat, otherwise null)
-    public \stdClass|null $chat_obj;
+    /**
+     * @ignore
+     */
+    protected int $chat_id;
+    /**
+     * @ignore
+     */
+    protected ChatType $type;
+    /**
+     * @ignore
+     */
+    protected string|null $title;
+    /**
+     * @ignore
+     */
+    protected string|null $username;
+    /**
+     * @ignore
+     */
+    protected User|null $user;
+    private \stdClass|null $chat_obj;
 
     function __construct(string|int $identifier) {
         // Check if database is setup
@@ -45,6 +60,27 @@ class Chat {
             } else {
                 $this->user = null;
             }
+    /**
+     * @brief Get protected properties, keeping them protected from being changed.
+     * 
+     * @param string $name Variable name.
+     * @throws \Exception If variable does not exist or is not allowed to be accessed externally.
+     * @return mixed
+     */
+    public function __get(string $name): mixed {
+        switch($name) {
+            case "chat_id":
+                return $this->chat_id;
+            case "type":
+                return $this->type;
+            case "title":
+                return $this->title;
+            case "username":
+                return $this->username;
+            case "user":
+                return $this->user;
+            default:
+                throw new \Exception("Property $name does not exist or not allowed to be accessed externally.");
         }
     }
 

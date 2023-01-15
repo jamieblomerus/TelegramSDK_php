@@ -14,15 +14,43 @@ use SleekDB\Store;
 use TelegramSDK\Bot;
 
 class User {
-    public int $user_id;
-    public string $username;
-    public string $first_name;
-    public string $last_name;
+    /** @ignore */
+    protected int $user_id;
+    /** @ignore */
+    protected string $username;
+    /** @ignore */
+    protected string $first_name;
+    /** @ignore */
+    protected string $last_name;
 
     function __construct() {
         // Check if database is setup
         if (!isset(Bot::$db_stores["users"])) {
             throw new \Exception("Database is not setup. Have you initialized the Bot class?");
+        }
+    }
+
+    /**
+     * @brief Get protected properties, keeping them protected from being changed.
+     * 
+     * @param string $name
+     * @throws \Exception If variable does not exist or is not allowed to be accessed externally.
+     * @return mixed
+     */
+    public function __get(string $name) {
+        switch ($name) {
+            case "user_id":
+                return $this->user_id;
+            case "username":
+                return $this->username;
+            case "full_name":
+                return $this->first_name." ".$this->last_name;
+            case "first_name":
+                return $this->first_name;
+            case "last_name":
+                return $this->last_name;
+            default:
+                throw new \Exception("Property $name does not exist or not allowed to be accessed externally.");
         }
     }
 
