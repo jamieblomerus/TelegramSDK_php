@@ -5,6 +5,7 @@
         xmlns="https://www.phpdoc.org"
         xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/phpDocumentor/phpDocumentor/master/data/xsd/phpdoc.xsd"
 >
+    <title>TelegramSDK_php</title>
     <paths>
         <output>docs/build</output>
     </paths>
