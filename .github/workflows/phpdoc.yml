@@ -1,4 +1,4 @@
-name: documentation
+name: Documentation
 
 on:
   push:
@@ -35,11 +35,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-phpdocumentor-
       - name: Build with phpDocumentor
-        run: docker run --rm --volume "$(pwd):/data" phpdoc/phpdoc:3 -vv --target docs --cache-folder .phpdoc/cache --template default
+        run: docker run --rm --volume "$(pwd):/data" phpdoc/phpdoc:3 -vv --target docs/build --cache-folder .phpdoc/cache --template default
       - name: Upload artifact to GitHub Pages
         uses: actions/upload-pages-artifact@v1
         with:
-          path: docs
+          path: docs/build
 
   deploy:
     needs: build
