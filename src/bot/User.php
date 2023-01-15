@@ -13,6 +13,17 @@ namespace TelegramSDK\Bot;
 use SleekDB\Store;
 use TelegramSDK\Bot;
 
+/**
+ * @brief This class lets you get information about users.
+ * @details This class contains functions to get information about users. To change the user, use the set_user() method.
+ * 
+ * @property-read int $user_id The user id. Use set_user() to change the user.
+ * @property-read string $username The username.
+ * @property-read string $full_name The full name. This is a combination of the first and last name.
+ * @property-read string $first_name The first name.
+ * @property-read string $last_name The last name.
+ * @see User::set_user()
+ */
 class User {
     /** @ignore */
     protected int $user_id;

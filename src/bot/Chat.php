@@ -13,6 +13,17 @@ namespace TelegramSDK\Bot;
 use SleekDB\Store;
 use TelegramSDK\Bot;
 
+/**
+ * @brief Chat class.
+ * @details This class is used to get information about chats.
+ * 
+ * @property-read int $chat_id Chat id.
+ * @property-read ChatType $type Chat type.
+ * @property-read string|null $title Chat title.
+ * @property-read string|null $username Chat username.
+ * @property-read User|null $user User object (if chat is a private chat, otherwise null).
+ * @property-read \stdClass|null $chat_obj Chat object (as returned by Telegram).
+ */
 class Chat {
     /**
      * @ignore
@@ -36,6 +47,12 @@ class Chat {
     protected User|null $user;
     private \stdClass|null $chat_obj;
 
+    /**
+     * @brief Construct a new Chat object.
+     * 
+     * @param string|int $identifier Chat id or username.
+     * @throws \Exception If database is not setup or chat does not exist in database.
+     */
     function __construct(string|int $identifier) {
         // Check if database is setup
         if (!isset(Bot::$db_stores["chats"])) {
@@ -48,18 +65,21 @@ class Chat {
         }
         if (!isset($chat)) {
             throw new \Exception("Chat does not exist in database.");
+        }
+
+        $this->chat_id = $chat["_id"];
+        $this->type = ChatType::from_string($chat["type"]);
+        $this->title = $chat["title"];
+        $this->username = $chat["username"];
+        $this->chat_obj = unserialize($chat["chat_obj"]);
+        if ($chat["type"] == "private") {
+            $this->user = new User;
+            $this->user->set_user($chat["_id"]);
         } else {
-            $this->chat_id = $chat["_id"];
-            $this->type = ChatType::from_string($chat["type"]);
-            $this->title = $chat["title"];
-            $this->username = $chat["username"];
-            $this->chat_obj = unserialize($chat["chat_obj"]);
-            if ($chat["type"] == "private") {
-                $this->user = new User;
-                $this->user->set_user($chat["_id"]);
-            } else {
-                $this->user = null;
-            }
+            $this->user = null;
+        }
+    }
+
     /**
      * @brief Get protected properties, keeping them protected from being changed.
      * 
